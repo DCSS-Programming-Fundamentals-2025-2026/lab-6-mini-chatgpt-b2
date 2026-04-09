@@ -15,6 +15,14 @@ namespace Lib.Batching
 
         public Batch GetBatch(int batchSize, int blockSize, Random? rng)
         {
+            if (batchSize <= 0)
+            {
+                throw new ArgumentException("BatchSize must be positive.", nameof(batchSize));
+            }
+            if (blockSize <= 0)
+            {
+                throw new ArgumentException("BlockSize must be positive.", nameof(blockSize));
+            }
             var random = rng ?? new Random();
             var tokens = _stream.GetTokens();
             var totalTokens = tokens.Length;

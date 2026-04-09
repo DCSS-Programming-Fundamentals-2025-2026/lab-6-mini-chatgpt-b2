@@ -69,18 +69,21 @@ namespace Lib.Training
                     if (_batchProvider is TokenBatchProvider provider)
                     {
                         var allTokens = provider.Stream.GetTokens();
-                        ngramModel.Train(allTokens);
+                        
+                        for (int epoch = 0; epoch < _config.Epochs; epoch++)
+                        {
+                            ngramModel.Train(allTokens);
+                            _metrics?.RecordEpoch(epoch, 0.0);
+                            _scheduler?.CheckAndSave(epoch, _model);
+                        }
 
-                        _metrics?.RecordEpoch(0, 0.0); 
-                        _scheduler?.CheckAndSave(0, _model);
-
-                        Console.WriteLine($"[B2] Модель {ngramModel.ModelKind} успішно навчена на {allTokens.Length} токенах.");
+                        Console.WriteLine($"[B2] РќР°РІС‡РµРЅРѕ {ngramModel.ModelKind} РЅР° {allTokens.Length} С‚РѕРєРµРЅР°С… Р·Р° {_config.Epochs} РµРїРѕС….");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[B2 Error] Помилка під час тренування NGram: {ex.Message}");
-                    throw; 
+                    Console.WriteLine($"[B2 Error] РџРѕРјРёР»РєР° РїС–Рґ С‡Р°СЃ РЅР°РІС‡Р°РЅРЅСЏ NGram: {ex.Message}");
+                    throw;
                 }
             }
         }
